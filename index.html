@@ -55,6 +55,48 @@
       line-height: 1.4;
     }
 
+    .tabs {
+      display: flex;
+      gap: 8px;
+      margin: 14px 0 16px;
+      flex-wrap: wrap;
+    }
+
+    .tab-btn {
+      background: #8c7a66;
+      color: #fff;
+      border: 0;
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .tab-btn.active {
+      background: var(--accent);
+    }
+
+    .tab-panel {
+      display: none;
+      animation: fade-in 220ms ease-out;
+    }
+
+    .tab-panel.active {
+      display: block;
+    }
+
+    @keyframes fade-in {
+      from {
+        opacity: 0;
+        transform: translateY(5px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
     .field {
       width: 100%;
       padding: 12px 14px;
@@ -160,35 +202,68 @@
 <body>
   <main class="card">
     <h1>Chunkbase Seed Map Coordinate Convertor</h1>
-    <p class="hint">Paste a Minecraft <strong>/tp</strong> command and convert to plain coordinates plus nether X/Z (divide by 8).</p>
+    <p class="hint">Convert coordinates between Overworld and Nether. The new tab multiplies Nether X/Z by 8 and does not handle Y.</p>
 
-    <label for="tp-input" class="hint">Input</label>
-    <input
-      id="tp-input"
-      class="field"
-      type="text"
-      autocomplete="off"
-      placeholder="/tp -16024 ~ 6664"
-      value="/tp -16024 ~ 6664"
-    >
-
-    <div class="actions">
-      <button id="convert-btn" type="button">Convert</button>
-      <button id="clear-btn" class="secondary" type="button">Clear</button>
+    <div class="tabs" role="tablist" aria-label="Coordinate converter mode">
+      <button id="tab-overworld-to-nether" class="tab-btn active" type="button" role="tab" aria-selected="true" aria-controls="panel-overworld-to-nether">Overworld to Nether</button>
+      <button id="tab-nether-to-overworld" class="tab-btn" type="button" role="tab" aria-selected="false" aria-controls="panel-nether-to-overworld">Nether to Overworld</button>
     </div>
 
-    <section class="result" aria-live="polite">
-      <div class="row">
-        <div class="label">XYZ</div>
-        <div id="xyz-output" class="value">-</div>
-        <button id="copy-xyz-btn" class="copy-btn" type="button">Copy</button>
+    <section id="panel-overworld-to-nether" class="tab-panel active" role="tabpanel" aria-live="polite">
+      <label for="tp-input" class="hint">Input /tp command</label>
+      <input
+        id="tp-input"
+        class="field"
+        type="text"
+        autocomplete="off"
+        placeholder="/tp -16024 ~ 6664"
+        value="/tp -16024 ~ 6664"
+      >
+
+      <div class="actions">
+        <button id="convert-btn" type="button">Convert</button>
+        <button id="clear-btn" class="secondary" type="button">Clear</button>
       </div>
-      <div class="row">
-        <div class="label">Nether XYZ</div>
-        <div id="nether-output" class="value">-</div>
-        <button id="copy-nether-btn" class="copy-btn" type="button">Copy</button>
+
+      <section class="result">
+        <div class="row">
+          <div class="label">XYZ</div>
+          <div id="xyz-output" class="value">-</div>
+          <button id="copy-xyz-btn" class="copy-btn" type="button">Copy</button>
+        </div>
+        <div class="row">
+          <div class="label">Nether XYZ</div>
+          <div id="nether-output" class="value">-</div>
+          <button id="copy-nether-btn" class="copy-btn" type="button">Copy</button>
+        </div>
+        <div id="status" class="message"></div>
+      </section>
+    </section>
+
+    <section id="panel-nether-to-overworld" class="tab-panel" role="tabpanel" aria-live="polite">
+      <label for="nether-input" class="hint">Input nether X Z (example: <strong>-2003 833</strong>)</label>
+      <input
+        id="nether-input"
+        class="field"
+        type="text"
+        autocomplete="off"
+        placeholder="-2003 833"
+        value="-2003 833"
+      >
+
+      <div class="actions">
+        <button id="convert-back-btn" type="button">Convert</button>
+        <button id="clear-back-btn" class="secondary" type="button">Clear</button>
       </div>
-      <div id="status" class="message"></div>
+
+      <section class="result">
+        <div class="row">
+          <div class="label">Overworld XZ</div>
+          <div id="overworld-output" class="value">-</div>
+          <button id="copy-overworld-btn" class="copy-btn" type="button">Copy</button>
+        </div>
+        <div id="status-back" class="message"></div>
+      </section>
     </section>
   </main>
 
